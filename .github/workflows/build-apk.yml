@@ -46,10 +46,9 @@ jobs:
       - name: Build debug APK
         working-directory: android
         run: |
-          set -o pipefail
           sed -i 's/\r$//' gradlew
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace 2>&1 | tail -100
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v5
