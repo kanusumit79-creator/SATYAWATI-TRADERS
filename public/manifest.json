@@ -1,0 +1,18 @@
+{
+  "short_name": "सत्यवती",
+  "name": "सत्यवती ट्रेडर्स - फलफूल थोक व्यवस्थापक",
+  "description": "सत्यवती ट्रेडर्स (प्रो: बृजेश कुमार) बुटवल फलफूल थोक बजार मण्डी व्यवस्थापन, बिलिङ, स्टक तथा पार्टी खाता",
+  "icons": [
+    {
+      "src": "/maa_satyawati.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FAF7F2",
+  "theme_color": "#F97316",
+  "display": "standalone",
+  "orientation": "portrait"
+}
