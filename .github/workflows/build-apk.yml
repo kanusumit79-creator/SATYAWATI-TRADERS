@@ -28,20 +28,19 @@ jobs:
         run: |
           echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> $GITHUB_ENV
-          sdkmanager --install "platform-tools" "platforms;android-35" "build-tools;35.0.0" 2>&1 | tail -5
+          sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0" 2>&1 | tail -5
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci || npm install
 
       - name: Build web app
         run: npm run build
 
-      - name: Add Android platform (if missing)
+      - name: Add Android platform (fresh on Linux)
         run: |
-          if [ ! -d android ]; then
-            npx cap add android
-          fi
+          rm -rf android
+          npx cap add android
           npx cap sync android
 
       - name: Build debug APK
