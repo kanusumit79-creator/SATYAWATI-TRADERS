@@ -27,12 +27,11 @@ jobs:
       - name: Setup Android SDK
         shell: bash
         run: |
-          set -euo pipefail
-          echo "ANDROID_HOME=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
-
           yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0"
 
       - name: Install dependencies
         run: npm ci
@@ -40,20 +39,32 @@ jobs:
       - name: Build web app
         run: npm run build
 
-      - name: Add Android platform (fresh on Linux)
+      - name: Add Android platform
+        shell: bash
         run: |
-          rm -rf android
-          npx cap add android
-          npx cap sync android
+          if [ ! -d android ]; then
+            npx cap add android
+          fi
+
+      - name: Sync Android project
+        shell: bash
+        run: npx cap sync android
 
       - name: Build debug APK
         working-directory: android
         shell: bash
         run: |
-          set -euo pipefail
+          set -o pipefail
           sed -i 's/\r$//' gradlew
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace --info --no-daemon
+          ./gradlew assembleDebug --stacktrace --info 2>&1 | tee gradle-build.log
+
+      - name: Upload Gradle log
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: gradle-build-log
+          path: android/gradle-build.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v5
